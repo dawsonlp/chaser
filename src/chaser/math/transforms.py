@@ -17,3 +17,4 @@ def rotate_vec2(vec: Vec2, angle_rad: float) -> Vec2:
 def heading_to_vec2(heading_rad: float) -> Vec2:
     """Convert heading angle (radians) to unit direction vector."""
     return Vec2(math.cos(heading_rad), math.sin(heading_rad))
+

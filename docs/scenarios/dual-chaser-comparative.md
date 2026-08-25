@@ -15,3 +15,4 @@ This scenario compares how effectively two automated chasers (`blue_1` and `blue
 uv run chaser simulate --scenario dual_chaser
 uv run chaser visualize --scenario dual_chaser
 ```
+

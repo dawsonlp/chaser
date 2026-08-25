@@ -79,3 +79,4 @@ class CubicHermiteSegment2D:
             + self.p1 * (d2h01 / dt2)
             + self.v1 * (d2h11 / dt)
         )
+

@@ -96,3 +96,4 @@ class SingleVsDualChaserStudy:
             dual_chaser_mean_score=mean_d_score,
             trials=tuple(results),
         )
+

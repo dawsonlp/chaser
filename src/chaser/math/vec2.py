@@ -64,3 +64,4 @@ class Vec2:
 
 
 ZERO_VEC2 = Vec2(0.0, 0.0)
+

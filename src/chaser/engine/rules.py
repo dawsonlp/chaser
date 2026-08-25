@@ -30,3 +30,4 @@ class ScoringPolicy(Protocol):
         events: tuple[EventRecord, ...],
         paths: Mapping[str, Path2D],
     ) -> float | None: ...
+

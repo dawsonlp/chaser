@@ -38,3 +38,4 @@ class SimulationRecord:
         """Query an entity's kinematic state at simulation time t."""
         bounded_time = min(self.duration_s, max(0.0, time))
         return self.tracks[entity_id].path.state_at(bounded_time)
+

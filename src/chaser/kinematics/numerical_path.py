@@ -105,3 +105,4 @@ class DenseNumericalPath2D:
 
 def math_isclose(a: float, b: float, tol: float = 1e-12) -> bool:
     return abs(a - b) <= tol
+

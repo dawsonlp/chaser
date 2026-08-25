@@ -49,3 +49,4 @@ class SphereQuadraticDrag:
             * self.body.frontal_area_m2
             * speed_mps**2
         )
+

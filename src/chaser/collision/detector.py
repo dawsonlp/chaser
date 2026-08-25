@@ -28,3 +28,4 @@ class ContactDetector(Protocol):
         from_time: float,
         through_time: float,
     ) -> float | None: ...
+

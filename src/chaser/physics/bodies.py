@@ -43,3 +43,4 @@ class RigidBody:
     def __post_init__(self) -> None:
         if self.mass_kg <= 0.0 or self.reference_area_m2 <= 0.0 or self.collision_radius_m <= 0.0:
             raise ValueError("mass, area, and collision radius must be positive")
+

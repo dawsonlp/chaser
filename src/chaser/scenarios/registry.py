@@ -27,3 +27,4 @@ class ScenarioRegistry:
     @classmethod
     def list_scenarios(cls) -> list[str]:
         return sorted(cls._factories.keys())
+

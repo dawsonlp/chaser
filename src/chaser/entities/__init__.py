@@ -44,3 +44,4 @@ __all__ = [
     "YELLOW_COLOR",
     "YELLOW_TRAIL_COLOR",
 ]
+

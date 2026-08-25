@@ -99,3 +99,4 @@ def adaptive_step_2d(
             current_dt = max(1e-8, current_dt * factor)
 
     return current_dt, pos_two_half, vel_two_half, acc_two_half, current_dt
+

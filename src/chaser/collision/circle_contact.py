@@ -134,3 +134,4 @@ class CircleContactDetector:
             from_time=from_time,
             through_time=through_time,
         )
+

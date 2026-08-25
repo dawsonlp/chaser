@@ -123,3 +123,4 @@ def bisection_root(
             lo = mid
             f_lower = f_mid
     return (lo + hi) * 0.5
+

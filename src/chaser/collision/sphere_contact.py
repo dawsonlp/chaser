@@ -51,3 +51,4 @@ class SphereContactDetector:
                 return (lo + hi) * 0.5
             left = right
         return None
+

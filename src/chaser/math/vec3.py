@@ -79,3 +79,4 @@ class Vec3:
 
 
 ZERO_VEC3 = Vec3(0.0, 0.0, 0.0)
+

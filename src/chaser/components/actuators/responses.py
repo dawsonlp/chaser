@@ -27,3 +27,4 @@ class PlanarThrustResponse:
             actuators.values[self.magnitude_actuator],
             actuators.values[self.direction_actuator],
         )
+

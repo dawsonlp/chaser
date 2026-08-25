@@ -17,3 +17,4 @@ class UniformAtmosphere:
 
     def density_at(self, altitude_m: float = 0.0) -> float:
         return self.density_kg_m3
+

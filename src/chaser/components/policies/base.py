@@ -14,3 +14,4 @@ class DecisionPolicy(Protocol):
         self,
         observation: VisualObservation,
     ) -> Mapping[str, float]: ...
+

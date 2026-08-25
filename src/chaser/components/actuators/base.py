@@ -45,3 +45,4 @@ class ActuatorSet:
             self.definitions[name].validate(value)
             updated[name] = value
         return ActuatorSet(self.definitions, updated)
+

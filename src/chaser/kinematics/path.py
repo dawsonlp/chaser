@@ -56,3 +56,4 @@ class PiecewisePath2D:
             else:
                 break
         return active_segment.state_at(time)
+

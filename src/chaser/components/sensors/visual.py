@@ -30,3 +30,4 @@ class DirectVisualSensor:
             relative_position=target_state.position - observer_state.position,
             relative_velocity=target_state.velocity - observer_state.velocity,
         )
+

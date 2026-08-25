@@ -48,3 +48,4 @@ class VisualStyle:
     show_trail: bool = True
     show_label: bool = True
     min_screen_radius_px: float = 3.0
+

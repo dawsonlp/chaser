@@ -41,3 +41,4 @@ from chaser.components.policies.cooperative.dual_pincer import DualPincerPolicy
 lead_policy = DualPincerPolicy(role="lead", maximum_acceleration=500.0, deadline=10.0, drag=drag)
 wing_policy = DualPincerPolicy(role="flank", maximum_acceleration=500.0, deadline=10.0, drag=drag, flank_offset_rad=0.2)
 ```
+

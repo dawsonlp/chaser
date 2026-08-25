@@ -30,3 +30,4 @@ class Sensor(Protocol):
         observer_path: Path2D,
         target_path: Path2D,
     ) -> VisualObservation: ...
+

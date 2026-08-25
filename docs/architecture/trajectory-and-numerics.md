@@ -29,3 +29,4 @@ Every path exposes `state_at(time)` which returns a `KinematicState(position, ve
    For complex continuous steering, turning rate limits, or non-linear aerodynamic forces, `DenseNumericalPath2D` integrates ODEs forward using adaptive Runge-Kutta 4(5) step doubling and caches step history.
    
    **Dense Output Interpolation**: Root-finding algorithms query `state_at(t)` at arbitrary bisection points. To prevent expensive re-integration from $t_0$, `DenseNumericalPath2D` performs $C^1$ cubic Hermite spline interpolation between cached integration steps in $O(1)$.
+

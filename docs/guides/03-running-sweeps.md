@@ -44,3 +44,4 @@ Or execute via the CLI:
 ```shell
 uv run chaser compare --acceleration 500
 ```
+

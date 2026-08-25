@@ -68,3 +68,4 @@ class QuadraticDragInterceptDecision:
             left = right
             left_value = right_value
         return None
+

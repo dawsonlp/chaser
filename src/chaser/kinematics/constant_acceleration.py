@@ -27,3 +27,4 @@ class ConstantAccelerationPath:
             velocity=self.initial.velocity + self.initial.acceleration * elapsed,
             acceleration=self.initial.acceleration,
         )
+

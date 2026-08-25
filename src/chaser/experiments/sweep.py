@@ -62,3 +62,4 @@ class ParameterSweep:
             record = self.scenario.run(settings)
             trials.append(ExperimentTrial(parameters=params, record=record))
         return SweepResult(scenario_name=self.scenario.name, trials=tuple(trials))
+

@@ -22,3 +22,4 @@ class PurePursuitPolicy:
             "thrust_acceleration": self.maximum_acceleration,
             "thrust_direction": observation.relative_position.direction(),
         }
+

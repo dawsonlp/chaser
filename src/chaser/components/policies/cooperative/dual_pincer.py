@@ -39,3 +39,4 @@ class DualPincerPolicy:
             base_changes["thrust_direction"] = base_dir + self.flank_offset_rad
 
         return base_changes
+

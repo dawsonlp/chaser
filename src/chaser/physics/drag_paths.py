@@ -63,3 +63,4 @@ class ConstantThrustQuadraticDragPath:
 def _log_cosh(value: float) -> float:
     absolute = abs(value)
     return absolute + math.log1p(math.exp(-2.0 * absolute)) - math.log(2.0)
+

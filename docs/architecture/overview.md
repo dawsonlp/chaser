@@ -35,3 +35,4 @@ The Chaser simulation engine is designed for discrete-event multi-agent pursuit 
 2. **Unified `Path` Trajectory Contract**: Both analytic paths and adaptive numerical integration paths implement `state_at(time: float) -> KinematicState`.
 3. **Decoupled Entities and Policies**: Agents are composed of typed, immutable dataclasses. Guidance policies are pure decision algorithms with zero knowledge of global simulation state beyond their sensor observations.
 4. **Universal Simulation Records**: Completed runs are stored in standardized `SimulationRecord` objects, allowing universal SDL playback and projection without writing UI code for each scenario.
+

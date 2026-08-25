@@ -12,3 +12,4 @@ __all__ = [
     "heading_to_vec2",
     "rotate_vec2",
 ]
+

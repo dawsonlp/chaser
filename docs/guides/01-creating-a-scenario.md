@@ -63,3 +63,4 @@ record = EventDrivenRuntime().run(model)
 ScenarioRegistry.register("custom_scenario", lambda: CustomScenario())
 ```
 Once registered, the scenario is immediately available via `chaser simulate --scenario custom_scenario` and `chaser visualize --scenario custom_scenario`!
+

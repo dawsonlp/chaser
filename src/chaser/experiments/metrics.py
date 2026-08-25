@@ -25,3 +25,4 @@ def summarize_records(records: Sequence[SimulationRecord]) -> dict[str, object]:
         "mean_catch_score_m": sum(scores) / len(scores) if scores else None,
         "max_catch_score_m": max(scores) if scores else None,
     }
+

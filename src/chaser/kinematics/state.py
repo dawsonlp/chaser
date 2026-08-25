@@ -31,3 +31,4 @@ class KinematicState3D:
             velocity=self.velocity.to_vec2_planar(),
             acceleration=self.acceleration.to_vec2_planar(),
         )
+

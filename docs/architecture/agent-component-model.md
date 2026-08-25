@@ -32,3 +32,4 @@ agent = Agent(
 - **Actuators (`ActuatorSet`, `PlanarThrustResponse`)**: Validates bounds and translates actuator commands into net force or acceleration.
 - **Path Builder**: Callback function recreating the agent's `Path2D` when actuator values change.
 - **Visual Style (`VisualStyle`)**: Configures display color, trail color, trail visibility, and minimum screen radius for projection and SDL rendering.
+
