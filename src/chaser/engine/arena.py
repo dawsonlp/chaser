@@ -10,7 +10,7 @@ from chaser.core import EventRecord, ModelEvent
 from chaser.engine.record import SimulationRecord, TrackRecord
 from chaser.engine.rules import InteractionRule, ScoringPolicy
 from chaser.entities.agent import Agent
-from chaser.kinematics.path import Path2D
+from chaser.kinematics.path import Path2D, PiecewisePath2D
 
 
 class ComposableArenaModel:
@@ -64,8 +64,11 @@ class ComposableArenaModel:
                 if "red" in self._agents and "red" != agent_id
                 else next((aid for aid in self._agents if aid != agent_id), "")
             )
+            scheduled: list[ModelEvent] = []
+
             if agent.sensors and target_id:
-                obs = agent.sensors[0].observe(
+                sensor = agent.sensors[0]
+                obs = sensor.observe(
                     time=event.time,
                     observer_id=agent_id,
                     target_id=target_id,
@@ -73,15 +76,30 @@ class ComposableArenaModel:
                     target_path=self._paths[target_id],
                 )
                 self._observations[agent_id] = obs
-                return (
+                scheduled.append(
                     ModelEvent(
                         event.time,
                         "decision",
                         (agent_id,),
                         priority=20,
-                    ),
+                    )
                 )
-            return ()
+
+                # If the sensor performs periodic scans, schedule the next scan event
+                scan_interval = getattr(sensor, "scan_interval_s", None)
+                if scan_interval is not None and scan_interval > 0:
+                    next_scan = event.time + scan_interval
+                    if next_scan <= self._horizon_time:
+                        scheduled.append(
+                            ModelEvent(
+                                time=next_scan,
+                                kind="observation",
+                                participants=(agent_id,),
+                                priority=10,
+                            )
+                        )
+
+            return tuple(scheduled)
 
         if event.kind == "decision":
             agent_id = event.participants[0]
@@ -89,15 +107,16 @@ class ComposableArenaModel:
             if agent.policy and agent_id in self._observations:
                 obs = self._observations[agent_id]
                 changes = agent.policy.choose_actuator_changes(obs)
-                return (
-                    ModelEvent(
-                        event.time,
-                        "actuator_values_changed",
-                        (agent_id,),
-                        payload=dict(changes),
-                        priority=30,
-                    ),
-                )
+                if changes:
+                    return (
+                        ModelEvent(
+                            event.time,
+                            "actuator_values_changed",
+                            (agent_id,),
+                            payload=dict(changes),
+                            priority=30,
+                        ),
+                    )
             return ()
 
         if event.kind == "actuator_values_changed":
@@ -110,13 +129,24 @@ class ComposableArenaModel:
 
                 if agent.path_builder:
                     old_state = self._paths[agent_id].state_at(event.time)
-                    new_path = agent.path_builder(
+                    new_segment = agent.path_builder(
                         self._agents[agent_id],
                         event.time,
                         old_state,
                         updated_actuators,
                     )
-                    self._paths[agent_id] = new_path
+                    current_path = self._paths[agent_id]
+                    if event.time > 0.0:
+                        if isinstance(current_path, PiecewisePath2D):
+                            self._paths[agent_id] = PiecewisePath2D(
+                                (*current_path.segments, new_segment)
+                            )
+                        else:
+                            self._paths[agent_id] = PiecewisePath2D(
+                                (current_path, new_segment)
+                            )
+                    else:
+                        self._paths[agent_id] = new_segment
 
                 return self._schedule_interactions(event.time)
             return ()
@@ -124,6 +154,19 @@ class ComposableArenaModel:
         # Check for interaction rules
         for rule in self._rules:
             if event.kind == rule.event_kind:
+                # Validate that entities are actually in contact at this event time
+                if rule.entity_a in self._paths and rule.entity_b in self._paths:
+                    pos_a = self._paths[rule.entity_a].state_at(event.time).position
+                    pos_b = self._paths[rule.entity_b].state_at(event.time).position
+                    radius_sum = (
+                        self._agents[rule.entity_a].radius_m
+                        + self._agents[rule.entity_b].radius_m
+                    )
+                    distance = (pos_a - pos_b).magnitude
+                    if distance > radius_sum + 1e-2:
+                        # Obsolete interaction event from a superseded trajectory
+                        return ()
+
                 if rule.outcome:
                     self._outcome = rule.outcome
                 return ()

@@ -6,11 +6,12 @@ from chaser.components.policies.intercept.pure_pursuit import PurePursuitPolicy
 from chaser.components.policies.intercept.quadratic_drag import (
     QuadraticDragInterceptDecision,
 )
+from chaser.components.policies.target.evasive import EvasiveGoalSteeringPolicy
 
 __all__ = [
     "DecisionPolicy",
     "DualPincerPolicy",
+    "EvasiveGoalSteeringPolicy",
     "PurePursuitPolicy",
     "QuadraticDragInterceptDecision",
 ]
-

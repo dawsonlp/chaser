@@ -9,6 +9,7 @@ from typing import Sequence
 
 from chaser.math.vec2 import Vec2
 from chaser.scenarios.dual_chaser import DualChaserScenario, DualChaserSettings
+from chaser.scenarios.evasive_target import EvasiveTargetScenario, EvasiveTargetSettings
 from chaser.scenarios.red_goal import RedGoalScenario, RedGoalSettings
 from chaser.scenarios.registry import ScenarioRegistry
 
@@ -140,6 +141,14 @@ def main(arguments: Sequence[str] | None = None) -> int:
                 sphere_drag_coefficient=args.drag_coefficient,
             )
             record = DualChaserScenario().run(settings)
+        elif args.scenario == "evasive_target":
+            settings = EvasiveTargetSettings(
+                blue_start=Vec2(args.blue_x, args.blue_y),
+                blue_max_acceleration_mps2=args.blue_max_acceleration,
+                air_density_kg_m3=args.air_density,
+                sphere_drag_coefficient=args.drag_coefficient,
+            )
+            record = EvasiveTargetScenario().run(settings)
         else:
             settings = RedGoalSettings(
                 blue_start=Vec2(args.blue_x, args.blue_y),

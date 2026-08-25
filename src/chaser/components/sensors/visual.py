@@ -1,4 +1,4 @@
-"""Direct ideal visual sensor implementation."""
+"""Direct visual sensor capturing relative kinematic state."""
 
 from __future__ import annotations
 
@@ -10,7 +10,7 @@ from chaser.kinematics.path import Path2D
 
 @dataclass(frozen=True, slots=True)
 class DirectVisualSensor:
-    """Initial ideal sensor: reports exact visible target motion at an event time."""
+    """A direct sensor that observes exact relative position and velocity."""
 
     def observe(
         self,
@@ -29,5 +29,6 @@ class DirectVisualSensor:
             target_id=target_id,
             relative_position=target_state.position - observer_state.position,
             relative_velocity=target_state.velocity - observer_state.velocity,
+            observer_position=observer_state.position,
+            observer_velocity=observer_state.velocity,
         )
-

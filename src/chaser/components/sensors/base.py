@@ -16,6 +16,8 @@ class VisualObservation:
     target_id: str
     relative_position: Vec2
     relative_velocity: Vec2
+    observer_position: Vec2 | None = None
+    observer_velocity: Vec2 | None = None
 
 
 class Sensor(Protocol):
@@ -30,4 +32,3 @@ class Sensor(Protocol):
         observer_path: Path2D,
         target_path: Path2D,
     ) -> VisualObservation: ...
-

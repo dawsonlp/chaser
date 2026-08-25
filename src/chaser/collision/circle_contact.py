@@ -82,7 +82,7 @@ def _earliest_circle_contact_by_bracketing(
     *,
     from_time: float,
     through_time: float,
-    interval_count: int = 16_384,
+    interval_count: int = 512,
     time_tolerance: float = 1e-9,
 ) -> float | None:
     contact_radius_squared = (first_radius + second_radius) ** 2

@@ -17,6 +17,7 @@ Architecture overview: [system architecture](docs/architecture/overview.md).
 - [Scenario index](docs/scenarios/readme.md)
   - [Red target, single blue interceptor, and goal post](docs/scenarios/red-target-blue-interceptor.md)
   - [Red target, two cooperative blue chasers, and goal post](docs/scenarios/dual-chaser-comparative.md)
+  - [Evasive red target, single blue interceptor, and goal post](docs/scenarios/evasive-target.md)
 - [How-to Guide: Creating a new Scenario](docs/guides/01-creating-a-scenario.md)
 - [How-to Guide: Implementing Guidance Policies](docs/guides/02-implementing-policies.md)
 - [How-to Guide: Running Parameter Sweeps & Comparative Studies](docs/guides/03-running-sweeps.md)
@@ -50,6 +51,7 @@ Run simulation:
 ```shell
 uv run chaser simulate --scenario red_goal
 uv run chaser simulate --scenario dual_chaser
+uv run chaser simulate --scenario evasive_target
 ```
 
 Run comparative 1-vs-2 chaser study:
@@ -65,6 +67,7 @@ brew install sdl3
 uv sync --extra visualization
 uv run chaser visualize --scenario red_goal
 uv run chaser visualize --scenario dual_chaser
+uv run chaser visualize --scenario evasive_target
 ```
 
 Generate intercept regions SVG:
