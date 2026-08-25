@@ -173,11 +173,10 @@ class DualChaserScenario:
                 body=cfg.blue_body,
                 sensors=(DirectVisualSensor(),),
                 policy=DualPincerPolicy(
-                    role="flank",
+                    role="wing",
                     maximum_acceleration=cfg.blue_max_acceleration_mps2,
                     deadline=cfg.uninterrupted_goal_time,
                     drag=drag,
-                    flank_offset_rad=0.15,
                 ),
                 actuators=make_actuators(),
                 actuator_response=PlanarThrustResponse(),

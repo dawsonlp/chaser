@@ -1,4 +1,4 @@
-"""Cooperative dual-chaser pincer / flanking guidance policy."""
+"""Cooperative dual-chaser guidance policy."""
 
 from __future__ import annotations
 
@@ -14,13 +14,13 @@ from chaser.physics.aerodynamics import SphereQuadraticDrag
 
 @dataclass(frozen=True, slots=True)
 class DualPincerPolicy:
-    """Cooperative policy that biases the intercept point based on role (lead vs wing/flank)."""
+    """Cooperative dual-chaser policy computing optimal intercept from each chaser's position."""
 
-    role: str  # "lead" or "flank"
+    role: str  # "lead" or "wing"
     maximum_acceleration: float
     deadline: float
     drag: SphereQuadraticDrag
-    flank_offset_rad: float = 0.15
+    time_delay_offset_s: float = 0.0
 
     def choose_actuator_changes(
         self,
@@ -28,15 +28,7 @@ class DualPincerPolicy:
     ) -> Mapping[str, float]:
         base_decision = QuadraticDragInterceptDecision(
             maximum_acceleration=self.maximum_acceleration,
-            deadline=self.deadline,
+            deadline=max(0.1, self.deadline - self.time_delay_offset_s),
             drag=self.drag,
         )
-        base_changes = dict(base_decision.choose_actuator_changes(observation))
-
-        if self.role == "flank":
-            # Bias direction slightly to envelope the target
-            base_dir = base_changes["thrust_direction"]
-            base_changes["thrust_direction"] = base_dir + self.flank_offset_rad
-
-        return base_changes
-
+        return base_decision.choose_actuator_changes(observation)
