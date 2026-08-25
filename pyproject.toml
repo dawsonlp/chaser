@@ -1,0 +1,20 @@
+[project]
+name = "chaser"
+version = "0.1.0"
+description = "Event-driven pursuit simulation and visualization"
+readme = "readme.md"
+requires-python = ">=3.12"
+dependencies = []
+
+[project.optional-dependencies]
+visualization = ["PySDL3==0.9.11b1"]
+
+[project.scripts]
+chaser = "chaser.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/chaser"]
