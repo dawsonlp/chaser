@@ -160,9 +160,14 @@ class SDLPlayback:
                 if simulation_time >= record.duration_s and final_reached_at is None:
                     final_reached_at = time.monotonic()
 
+                outcome_text = (
+                    record.outcome.value
+                    if hasattr(record.outcome, "value")
+                    else str(record.outcome)
+                )
                 title = (
                     f"Chaser | t={simulation_time:0.2f}s | "
-                    f"{record.outcome.value.replace('_', ' ')}"
+                    f"{outcome_text.replace('_', ' ')}"
                 )
                 sdl.SDL_SetWindowTitle(window, title.encode("utf-8"))
                 self._render_scene(sdl, renderer, projection.scene_at(simulation_time))
