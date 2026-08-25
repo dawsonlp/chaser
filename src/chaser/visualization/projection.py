@@ -1,20 +1,22 @@
-"""Pure projection from a pursuit record to view-space primitives."""
+"""Pure projection from simulation records to view-space primitives."""
 
 from __future__ import annotations
 
 from dataclasses import dataclass
 import math
+from typing import Mapping
 
-from chaser.plane import Vec2
-from chaser.scenarios.red_goal import BLUE_ID, GOAL_ID, RED_ID, PursuitRecord
-
-
-@dataclass(frozen=True, slots=True)
-class Color:
-    red: int
-    green: int
-    blue: int
-    alpha: int = 255
+from chaser.entities.visual_style import (
+    BACKGROUND_COLOR,
+    BLUE_COLOR,
+    BLUE_TRAIL_COLOR,
+    Color,
+    GOAL_COLOR,
+    GRID_COLOR,
+    RED_COLOR,
+    RED_TRAIL_COLOR,
+)
+from chaser.math.vec2 import Vec2
 
 
 @dataclass(frozen=True, slots=True)
@@ -43,21 +45,21 @@ class ViewScene:
     circles: tuple[ViewCircle, ...]
 
 
-BACKGROUND = Color(248, 250, 252)
-GRID = Color(218, 224, 230)
-RED = Color(220, 55, 55)
-RED_TRAIL = Color(235, 150, 150)
-BLUE = Color(45, 100, 220)
-BLUE_TRAIL = Color(145, 175, 235)
-GOAL = Color(65, 70, 80)
+BACKGROUND = BACKGROUND_COLOR
+GRID = GRID_COLOR
+RED = RED_COLOR
+RED_TRAIL = RED_TRAIL_COLOR
+BLUE = BLUE_COLOR
+BLUE_TRAIL = BLUE_TRAIL_COLOR
+GOAL = GOAL_COLOR
 
 
-class RedGoalProjection:
-    """Project the first scenario into a fixed two-dimensional screen view."""
+class UniversalProjection2D:
+    """Project any 2D simulation record into a fixed screen view."""
 
     def __init__(
         self,
-        record: PursuitRecord,
+        record: any,
         *,
         width: int = 1_200,
         height: int = 720,
@@ -68,6 +70,7 @@ class RedGoalProjection:
             raise ValueError("projection dimensions must be positive")
         if padding_px < 0.0 or grid_spacing_m <= 0.0:
             raise ValueError("padding must be non-negative and grid spacing positive")
+
         self.record = record
         self.width = width
         self.height = height
@@ -93,6 +96,7 @@ class RedGoalProjection:
         drawable_height = height - 2.0 * padding_px
         if drawable_width <= 0.0 or drawable_height <= 0.0:
             raise ValueError("padding leaves no drawable area")
+
         self._scale = min(
             drawable_width / (max_x - min_x),
             drawable_height / (max_y - min_y),
@@ -116,15 +120,27 @@ class RedGoalProjection:
 
     def scene_at(self, time_s: float) -> ViewScene:
         time_s = min(self.record.duration_s, max(0.0, time_s))
-        circles = tuple(
-            ViewCircle(
-                object_id=object_id,
-                center=self.to_view(self.record.state_at(object_id, time_s).position),
-                radius=max(3.0, track.radius_m * self._scale),
-                color={RED_ID: RED, BLUE_ID: BLUE, GOAL_ID: GOAL}[object_id],
+        circles: list[ViewCircle] = []
+        for object_id, track in self.record.tracks.items():
+            color = getattr(track, "style", None)
+            circle_color = color.color if color else {
+                "red": RED,
+                "blue": BLUE,
+                "goal": GOAL,
+            }.get(object_id, BLUE)
+
+            min_rad = color.min_screen_radius_px if color else 3.0
+            screen_rad = max(min_rad, track.radius_m * self._scale)
+
+            circles.append(
+                ViewCircle(
+                    object_id=object_id,
+                    center=self.to_view(self.record.state_at(object_id, time_s).position),
+                    radius=screen_rad,
+                    color=circle_color,
+                )
             )
-            for object_id, track in self.record.tracks.items()
-        )
+
         return ViewScene(
             time_s=time_s,
             width=self.width,
@@ -132,7 +148,7 @@ class RedGoalProjection:
             background=BACKGROUND,
             grid=self._grid_lines(),
             trails=self._trail_lines(time_s),
-            circles=circles,
+            circles=tuple(circles),
         )
 
     def _grid_lines(self) -> tuple[ViewLine, ...]:
@@ -168,13 +184,31 @@ class RedGoalProjection:
         segment_count = max(1, min(120, math.ceil(time_s * 20.0)))
         times = [time_s * index / segment_count for index in range(segment_count + 1)]
         lines: list[ViewLine] = []
-        for object_id, color in ((RED_ID, RED_TRAIL), (BLUE_ID, BLUE_TRAIL)):
+
+        for object_id, track in self.record.tracks.items():
+            style = getattr(track, "style", None)
+            if style and not style.show_trail:
+                continue
+
+            trail_col = style.trail_color if (style and style.trail_color) else {
+                "red": RED_TRAIL,
+                "blue": BLUE_TRAIL,
+            }.get(object_id)
+
+            if trail_col is None:
+                continue
+
             points = [
                 self.to_view(self.record.state_at(object_id, time).position)
                 for time in times
             ]
             lines.extend(
-                ViewLine(start, end, color)
+                ViewLine(start, end, trail_col)
                 for start, end in zip(points, points[1:])
             )
         return tuple(lines)
+
+
+class RedGoalProjection(UniversalProjection2D):
+    """Backward-compatible projection alias for the first scenario."""
+    pass

@@ -384,6 +384,9 @@ class RedGoalModel:
 
 
 class RedGoalScenario:
+    name = "red_goal"
+    description = "A blue interceptor, a red target, and a goal post."
+
     def run(self, settings: RedGoalSettings | None = None) -> PursuitRecord:
         configured = settings or RedGoalSettings()
         return EventDrivenRuntime().run(RedGoalModel(configured))

@@ -9,8 +9,7 @@ from pathlib import Path
 import time
 from typing import Any
 
-from chaser.scenarios.red_goal import PursuitRecord
-from chaser.visualization.projection import Color, RedGoalProjection, ViewCircle, ViewLine
+from chaser.visualization.projection import Color, UniversalProjection2D, ViewCircle, ViewLine
 
 
 REQUIRED_SDL_VERSION = 3_004_014
@@ -110,7 +109,7 @@ class SDLPlayback:
 
     def play(
         self,
-        record: PursuitRecord,
+        record: Any,
         *,
         playback_rate: float = 1.0,
         frames_per_second: float = 60.0,
@@ -123,7 +122,7 @@ class SDLPlayback:
             raise ValueError("final hold must be non-negative")
 
         sdl = _load_sdl()
-        projection = RedGoalProjection(record, width=self.width, height=self.height)
+        projection = UniversalProjection2D(record, width=self.width, height=self.height)
         window = ctypes.POINTER(sdl.SDL_Window)()
         renderer = ctypes.POINTER(sdl.SDL_Renderer)()
 
