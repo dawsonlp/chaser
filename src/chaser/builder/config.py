@@ -97,9 +97,24 @@ class ScenarioConfig:
 
         themes = ["blue", "cyan", "purple", "yellow"]
         chasers: list[ChaserSpec] = []
+        is_adaptive_chaser = chaser_policy in {
+            "dynamic_lead",
+            "proportional_navigation",
+            "adaptive_intercept",
+        }
         for i in range(chaser_count):
             cid = f"blue_{i+1}" if chaser_count > 1 else "blue"
             role = "lead" if i == 0 else "wing"
+            chaser_sensor = "periodic_threat" if is_adaptive_chaser else "direct_visual"
+            chaser_sensor_params = (
+                {
+                    "scan_interval_s": 0.1,
+                    "detection_range_m": 100_000.0,
+                    "threat_closing_speed_threshold_mps": -10_000.0,
+                }
+                if is_adaptive_chaser
+                else {}
+            )
             chasers.append(
                 ChaserSpec(
                     id=cid,
@@ -108,6 +123,8 @@ class ScenarioConfig:
                     max_acceleration_mps2=chaser_acc,
                     policy_name=chaser_policy,
                     policy_params={"role": role} if chaser_policy == "dual_pincer" else {},
+                    sensor_name=chaser_sensor,
+                    sensor_params=chaser_sensor_params,
                     color_theme=themes[i % len(themes)],
                 )
             )
@@ -133,3 +150,4 @@ class ScenarioConfig:
             target=target,
             goal=GoalSpec(center=goal_center),
         )
+

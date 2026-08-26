@@ -52,6 +52,7 @@ class PolicyMatrixTournament:
             ("1 Chaser (Direct Intercept)", 1, "quadratic_drag"),
             ("1 Chaser (Pure Pursuit)", 1, "pure_pursuit"),
             ("2 Chasers (Pincer Flank)", 2, "dual_pincer"),
+            ("2 Chasers (Adaptive Pincer)", 2, "dynamic_lead"),
         ]
 
         target_setups = [
@@ -82,3 +83,4 @@ class PolicyMatrixTournament:
                 )
 
         return TournamentReport(matches=tuple(matches))
+

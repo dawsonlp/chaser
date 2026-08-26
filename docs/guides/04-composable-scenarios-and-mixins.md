@@ -85,3 +85,4 @@ config = ScenarioConfig.create(
 record = run_composed_scenario(config)
 print(f"Outcome: {record.outcome}, Time: {record.duration_s:.2f}s")
 ```
+

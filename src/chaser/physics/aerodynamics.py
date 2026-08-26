@@ -50,3 +50,9 @@ class SphereQuadraticDrag:
             * speed_mps**2
         )
 
+    def drag_acceleration(self, velocity: Vec2) -> Vec2:
+        speed = velocity.magnitude
+        if speed < 1e-12:
+            return Vec2(0.0, 0.0)
+        return velocity * (-self.drag_factor_per_m * speed)
+

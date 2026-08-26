@@ -32,6 +32,7 @@ from chaser.entities.visual_style import (
     VisualStyle,
 )
 from chaser.kinematics.constant_acceleration import ConstantAccelerationPath
+from chaser.kinematics.numerical_path import DenseNumericalPath2D
 from chaser.kinematics.path import Path2D
 from chaser.kinematics.state import KinematicState
 from chaser.math.vec2 import Vec2, ZERO_VEC2
@@ -190,11 +191,26 @@ def build_scenario_model(config: ScenarioConfig) -> ComposableArenaModel:
             chaser_drag: SphereQuadraticDrag = drag,
         ) -> Path2D:
             response = PlanarThrustResponse()
-            return ConstantThrustQuadraticDragPath(
+            thrust_acc = response.acceleration(actuators)
+            if t == 0.0 and state.velocity.magnitude < 1e-6:
+                return ConstantThrustQuadraticDragPath(
+                    start_time=t,
+                    initial_position=state.position,
+                    thrust_acceleration=thrust_acc,
+                    drag=chaser_drag,
+                )
+
+            def total_accel(time_val: float, pos: Vec2, vel: Vec2) -> Vec2:
+                return thrust_acc + chaser_drag.drag_acceleration(vel)
+
+            return DenseNumericalPath2D(
                 start_time=t,
-                initial_position=state.position,
-                thrust_acceleration=response.acceleration(actuators),
-                drag=chaser_drag,
+                initial_state=KinematicState(
+                    position=state.position,
+                    velocity=state.velocity,
+                    acceleration=thrust_acc,
+                ),
+                acceleration_func=total_accel,
             )
 
         agents[chaser_spec.id] = Agent(
@@ -260,3 +276,4 @@ def run_composed_scenario(config: ScenarioConfig) -> SimulationRecord:
     """Execute a declarative scenario configuration and return its simulation record."""
     model = build_scenario_model(config)
     return EventDrivenRuntime().run(model)
+

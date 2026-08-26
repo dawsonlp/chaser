@@ -8,6 +8,12 @@ from typing import Any, Callable, Mapping
 from chaser.components.policies.base import DecisionPolicy
 from chaser.components.policies.cooperative.dual_pincer import DualPincerPolicy
 from chaser.components.policies.intercept.adaptive import AdaptiveInterceptPolicy
+from chaser.components.policies.intercept.dynamic_lead import (
+    DynamicLeadInterceptPolicy,
+)
+from chaser.components.policies.intercept.proportional_navigation import (
+    ProportionalNavigationGuidancePolicy,
+)
 from chaser.components.policies.intercept.pure_pursuit import PurePursuitPolicy
 from chaser.components.policies.intercept.quadratic_drag import (
     QuadraticDragInterceptDecision,
@@ -125,6 +131,28 @@ PolicyCatalog.register(
                 SphereBody(0.1, 7850.0), UniformAtmosphere(1.225), 0.47
             ),
             time_delay_offset_s=time_delay_offset_s,
+        )
+    ),
+)
+
+PolicyCatalog.register(
+    "dynamic_lead",
+    "Calculates exact mid-course lead thrust vector from current chaser position & velocity.",
+    lambda maximum_acceleration=500.0, deadline=20.0, **kwargs: (
+        DynamicLeadInterceptPolicy(
+            maximum_acceleration=maximum_acceleration,
+            deadline=deadline,
+        )
+    ),
+)
+
+PolicyCatalog.register(
+    "proportional_navigation",
+    "Augmented Proportional Navigation (APN) driving line-of-sight rate to zero.",
+    lambda maximum_acceleration=500.0, navigation_gain=3.5, **kwargs: (
+        ProportionalNavigationGuidancePolicy(
+            maximum_acceleration=maximum_acceleration,
+            navigation_gain=navigation_gain,
         )
     ),
 )

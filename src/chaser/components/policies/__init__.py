@@ -3,6 +3,12 @@
 from chaser.components.policies.base import DecisionPolicy
 from chaser.components.policies.cooperative.dual_pincer import DualPincerPolicy
 from chaser.components.policies.intercept.adaptive import AdaptiveInterceptPolicy
+from chaser.components.policies.intercept.dynamic_lead import (
+    DynamicLeadInterceptPolicy,
+)
+from chaser.components.policies.intercept.proportional_navigation import (
+    ProportionalNavigationGuidancePolicy,
+)
 from chaser.components.policies.intercept.pure_pursuit import PurePursuitPolicy
 from chaser.components.policies.intercept.quadratic_drag import (
     QuadraticDragInterceptDecision,
@@ -13,7 +19,9 @@ __all__ = [
     "AdaptiveInterceptPolicy",
     "DecisionPolicy",
     "DualPincerPolicy",
+    "DynamicLeadInterceptPolicy",
     "EvasiveGoalSteeringPolicy",
+    "ProportionalNavigationGuidancePolicy",
     "PurePursuitPolicy",
     "QuadraticDragInterceptDecision",
 ]
