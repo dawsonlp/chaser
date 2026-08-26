@@ -1,8 +1,8 @@
 # Chaser
 
-Chaser is a simulation project for comparing how effectively two automated chasers can catch an automated target relative to one chaser.
+Chaser is a simulation project for comparing how effectively automated chasers can catch an automated target under evolving strategies and capabilities.
 
-The first case uses circular objects moving on a two-dimensional plane. Each object senses its surroundings, uses those observations to make decisions, and acts through its available actuators. Simulation results are recorded and projected into video visualization. The architecture is modular and decoupled to support other spaces (3D ready), object models, sensors, actuators, and behaviors.
+The framework provides a discrete-event continuous-time physics engine on a 2D plane (3D-ready architecture). Participants sense their environment, compute guidance decisions, actuate physical forces against quadratic atmospheric drag, and record trajectories for SDL video visualization.
 
 See [the load-bearing design decisions](docs/design/readme.md).
 
@@ -18,6 +18,7 @@ Architecture overview: [system architecture](docs/architecture/overview.md).
   - [Red target, single blue interceptor, and goal post](docs/scenarios/red-target-blue-interceptor.md)
   - [Red target, two cooperative blue chasers, and goal post](docs/scenarios/dual-chaser-comparative.md)
   - [Evasive red target, single blue interceptor, and goal post](docs/scenarios/evasive-target.md)
+- [How-to Guide: Composable Scenarios & Component Catalog](docs/guides/04-composable-scenarios-and-mixins.md)
 - [How-to Guide: Creating a new Scenario](docs/guides/01-creating-a-scenario.md)
 - [How-to Guide: Implementing Guidance Policies](docs/guides/02-implementing-policies.md)
 - [How-to Guide: Running Parameter Sweeps & Comparative Studies](docs/guides/03-running-sweeps.md)
@@ -26,10 +27,11 @@ Architecture overview: [system architecture](docs/architecture/overview.md).
 
 Written in Python 3.12 or newer:
 
-- **Discrete-Event Kernel**: A small priority-queue discrete-event runtime advances only to model-produced events in continuous time.
-- **Composable Spatial Arena**: Reusable event-driven arena coordinator managing agents, sensors, policies, actuator updates, and automatic pairwise collision scheduling.
-- **Unified Trajectories**: Both analytic paths and adaptive numerical integration paths (RK45 with memoized Hermite dense output) adhere to the standard `Path2D` protocol.
-- **Universal Visualization**: Completed simulation records are projected into screen-space primitives and sampled by an SDL renderer for any scenario.
+- **Component Catalog (`chaser.catalog`)**: Discoverable catalog of guidance policies (`straight_line`, `quadratic_drag`, `pure_pursuit`, `dual_pincer`, `adaptive_intercept`, `evasive_goal_steering`) and sensors (`direct_visual`, `periodic_threat`).
+- **Dynamic Scenario Builder (`chaser.builder`)**: Declarative configuration to mix and match arbitrary numbers of chasers, starting positions, policies, and evasion behaviors.
+- **Discrete-Event Kernel (`chaser.core`, `chaser.engine`)**: Event-driven runtime advancing in continuous time only when model events occur, handling multi-agent observations, decisions, and contact detection.
+- **Unified Trajectories (`chaser.kinematics`, `chaser.physics`)**: Analytic motion paths and adaptive numerical integration paths (RK45 with memoized cubic Hermite dense output).
+- **Universal Visualization (`chaser.visualization`)**: Simulation records sampled dynamically by an SDL renderer.
 
 ## Running
 
@@ -40,13 +42,44 @@ uv sync
 uv run python -m unittest discover -s tests -v
 ```
 
-List available scenarios:
+### 1. Dynamic Composition & Catalog (`chaser compose`, `chaser catalog`)
+
+List all available guidance algorithms, policies, and sensors:
+
+```shell
+uv run chaser catalog
+```
+
+Compose arbitrary scenarios from the command line:
+
+```shell
+# 2 Chasers using Dual Pincer vs Active Evasive Target (Visualized)
+uv run chaser compose --chasers 2 --chaser-policy dual_pincer --target-policy evasive_goal_steering --visualize
+
+# 1 Chaser vs Passive Target
+uv run chaser compose --chasers 1 --chaser-policy quadratic_drag --target-policy straight_line
+
+# Custom starting coordinates and evasion burst acceleration
+uv run chaser compose --chasers 2 --chaser-1-x 3500 --chaser-1-y -2000 --target-policy evasive_goal_steering --target-evade-acc 400
+```
+
+### 2. Policy Matrix Tournament (`chaser matrix`)
+
+Run an automated benchmark tournament evaluating chaser strategies against target strategies:
+
+```shell
+uv run chaser matrix
+```
+
+### 3. Preset Scenarios
+
+List registered preset scenarios:
 
 ```shell
 uv run chaser list
 ```
 
-Run simulation:
+Run preset simulations:
 
 ```shell
 uv run chaser simulate --scenario red_goal
@@ -54,23 +87,15 @@ uv run chaser simulate --scenario dual_chaser
 uv run chaser simulate --scenario evasive_target
 ```
 
-Run comparative 1-vs-2 chaser study:
+Visualize preset scenarios in SDL:
 
 ```shell
-uv run chaser compare --acceleration 500
-```
-
-The visualization uses SDL 3.4.14 and PySDL3 0.9.11b1. On macOS with Homebrew:
-
-```shell
-brew install sdl3
-uv sync --extra visualization
 uv run chaser visualize --scenario red_goal
 uv run chaser visualize --scenario dual_chaser
 uv run chaser visualize --scenario evasive_target
 ```
 
-Generate intercept regions SVG:
+Generate reachability intercept regions SVG:
 
 ```shell
 uv run chaser plot-regions --output docs/plots/intercept-regions.svg

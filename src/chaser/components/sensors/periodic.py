@@ -63,3 +63,4 @@ class PeriodicThreatSensor:
             closing_speed_mps=closing_speed,
             is_threat=is_threat,
         )
+

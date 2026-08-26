@@ -5,6 +5,11 @@ from chaser.experiments.comparison import (
     ComparisonTrialResult,
     SingleVsDualChaserStudy,
 )
+from chaser.experiments.matrix import (
+    MatrixMatchResult,
+    PolicyMatrixTournament,
+    TournamentReport,
+)
 from chaser.experiments.metrics import summarize_records
 from chaser.experiments.sweep import (
     ExperimentTrial,
@@ -16,9 +21,11 @@ __all__ = [
     "ComparativeStudyReport",
     "ComparisonTrialResult",
     "ExperimentTrial",
+    "MatrixMatchResult",
     "ParameterSweep",
+    "PolicyMatrixTournament",
     "SingleVsDualChaserStudy",
     "SweepResult",
+    "TournamentReport",
     "summarize_records",
 ]
-

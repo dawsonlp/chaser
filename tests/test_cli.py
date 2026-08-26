@@ -18,6 +18,38 @@ class CLITests(unittest.TestCase):
         self.assertIn("red_goal", output)
         self.assertIn("dual_chaser", output)
 
+    def test_cli_catalog(self) -> None:
+        buf = io.StringIO()
+        with redirect_stdout(buf):
+            code = main(["catalog"])
+        self.assertEqual(code, 0)
+        output = buf.getvalue()
+        self.assertIn("quadratic_drag", output)
+        self.assertIn("dual_pincer", output)
+        self.assertIn("evasive_goal_steering", output)
+
+    def test_cli_compose(self) -> None:
+        buf = io.StringIO()
+        with redirect_stdout(buf):
+            code = main([
+                "compose",
+                "--chasers", "2",
+                "--chaser-policy", "dual_pincer",
+                "--target-policy", "straight_line",
+            ])
+        self.assertEqual(code, 0)
+        data = json.loads(buf.getvalue())
+        self.assertIn(data["outcome"], {"blue_1_intercepted", "blue_2_intercepted"})
+
+    def test_cli_matrix(self) -> None:
+        buf = io.StringIO()
+        with redirect_stdout(buf):
+            code = main(["matrix"])
+        self.assertEqual(code, 0)
+        output = buf.getvalue()
+        self.assertIn("Chaser Team", output)
+        self.assertIn("Target Strategy", output)
+
     def test_cli_simulate_default(self) -> None:
         buf = io.StringIO()
         with redirect_stdout(buf):
@@ -45,4 +77,3 @@ class CLITests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-
