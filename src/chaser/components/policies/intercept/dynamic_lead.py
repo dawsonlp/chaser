@@ -100,3 +100,4 @@ class DynamicLeadInterceptPolicy:
             "thrust_acceleration": a_max,
             "thrust_direction": fallback_dir,
         }
+

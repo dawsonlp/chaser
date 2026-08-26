@@ -54,3 +54,4 @@ class ProportionalNavigationGuidancePolicy:
             "thrust_acceleration": min(self.maximum_acceleration, max(50.0, total_acc.magnitude)),
             "thrust_direction": total_acc.direction(),
         }
+
