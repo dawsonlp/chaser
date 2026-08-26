@@ -100,3 +100,8 @@ Generate reachability intercept regions SVG:
 ```shell
 uv run chaser plot-regions --output docs/plots/intercept-regions.svg
 ```
+
+## License
+
+Licensed under the [GNU General Public License v3.0 or later](LICENSE) (GPL-3.0-or-later).
+
